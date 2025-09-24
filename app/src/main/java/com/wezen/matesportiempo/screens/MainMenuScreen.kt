@@ -28,6 +28,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.wezen.matesportiempo.data.Module
 import com.wezen.matesportiempo.data.getModules
+import com.wezen.matesportiempo.ui.theme.*
 
 
 @Composable
@@ -59,10 +62,8 @@ fun MainMenuScreen (
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF4CAF50),
-                        Color(0xFF2196F3)
-                    )
+                    colors = listOf(Fondo1,Fondo2)
+
                 )
             )
     ) {
@@ -144,19 +145,23 @@ fun MainMenuScreen (
     if (showStats) {
         AlertDialog(
             onDismissRequest = { showStats = false },
-            title = { Text("📊 Tus Estadísticas") },
+            textContentColor = Color.Black,
+            titleContentColor = Color.Black,
+
+            title = { Text("📊 Tus Estadísticas",color = Color.Black) },
             text = {
-                Column {
-                    StatRow("Ejercicios completados", "245")
+                Column{
+                    StatRow(label ="Ejercicios completados", value="245")
                     StatRow("Porcentaje de aciertos", "87%")
                     StatRow("Tiempo promedio", "45s")
                     StatRow("Área favorita", "Sumas")
                     StatRow("Área a mejorar", "Divisiones")
                 }
             },
+
             confirmButton = {
                 TextButton(onClick = { showStats = false }) {
-                    Text("Cerrar")
+                    Text("Cerrar", color = Color.Black)
                 }
             }
         )
@@ -173,13 +178,14 @@ fun StatRow(label: String, value: String) {
     ) {
         Text(
             text = label,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            color = Color.Black
         )
         Text(
             text = value,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = Color.Black
         )
     }
 }

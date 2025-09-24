@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wezen.matesportiempo.data.User
+import com.wezen.matesportiempo.ui.theme.*
 
 @Composable
 fun LoginScreen ( onUserSelected: (Int) -> Unit){
@@ -51,9 +52,9 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
     //Por el momento metemos a cascoporrro 3
     val listadoUsuarios = remember {
         mutableStateListOf(
-            User(1, "Ana", "🎀"),
-            User(2, "Carlos", "⚽"),
-            User(3, "María", "🌸")
+            User(1, "Alya", "🎀",54),
+            User(2, "Dubhe", "⚽",33),
+            User(3, "Elio", "🌸",45)
         )
     }
 
@@ -62,9 +63,8 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF6B73FF),
-                        Color(0xFF9B59B6)
+                    colors = listOf( Fondo1,Fondo2
+
                     )
                 )
             )
@@ -78,8 +78,8 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
         ){
             // Título principal
             Text(
-                text = "🧮 MathKids",
-                fontSize = 48.sp,
+                text = "🧮 Mates Por Tiempo",
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -97,6 +97,9 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
@@ -182,7 +185,8 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
                                 val newUser = User(
                                     id = listadoUsuarios.maxOf { it.id } + 1,
                                     name = newUserName,
-                                    avatar = "👦" // Por defecto
+                                    avatar = "👦" ,
+                                    tiempoConseguido = 34// Por defecto
                                 )
                                 listadoUsuarios.add(newUser)
                                 showCreateUser = false
