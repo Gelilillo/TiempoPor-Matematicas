@@ -229,6 +229,7 @@ fun UserCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Text(
                 text = user.avatar,
                 fontSize = 32.sp,
@@ -246,6 +247,7 @@ fun UserCard(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium
             )
+
         }
     }
 }
