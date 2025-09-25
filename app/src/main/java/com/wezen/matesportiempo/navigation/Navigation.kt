@@ -52,7 +52,15 @@ fun MatesPorTiempoNavigation() {
                 userId = userId,
                 onBack = { navController.popBackStack() }
             )
-        }/*
+        }
+        composable("Comprension/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull() ?: 0
+            ComprensionScreen(
+                userId = userId,
+                onBack = { navController.popBackStack() }
+            )
+        }
+                /*
         composable("resta/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull() ?: 0
             RestaScreen(
