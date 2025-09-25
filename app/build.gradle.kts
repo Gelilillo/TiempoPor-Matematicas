@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,20 @@ plugins {
 android {
     namespace = "com.wezen.matesportiempo"
     compileSdk = 36
+
+    /*// --- AÑADE ESTE BLOQUE ---
+    val properties = Properties()
+    val propertiesFile = project.rootProject.file("local.properties")
+    if (propertiesFile.exists()) {
+        propertiesFile.inputStream().use { properties.load(it) }
+    }
+    val geminiApiKey = properties.getProperty("API_KEY") ?: ""
+*/
+    buildFeatures {
+        compose = true
+        buildConfig = true // Asegúrate de que esta línea está presente
+    }
+
 
     defaultConfig {
         applicationId = "com.wezen.matesportiempo"
@@ -53,6 +69,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material)
+    /*implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.text)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.room.compiler)*/
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,4 +80,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Dependencias para GEMINI IA
+    //implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
 }

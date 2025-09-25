@@ -45,14 +45,14 @@ fun MatesPorTiempoNavigation() {
                 userId = userId,
                 onBack = { navController.popBackStack() }
             )
-        }/*
+        }
         composable("suma/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull() ?: 0
             SumaScreen(
                 userId = userId,
                 onBack = { navController.popBackStack() }
             )
-        }
+        }/*
         composable("resta/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull() ?: 0
             RestaScreen(
