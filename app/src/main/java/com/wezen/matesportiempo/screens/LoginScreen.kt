@@ -43,7 +43,7 @@ import com.wezen.matesportiempo.data.User
 import com.wezen.matesportiempo.ui.theme.*
 
 @Composable
-fun LoginScreen ( onUserSelected: (Int) -> Unit){
+fun LoginScreen ( onUserSelected: (Long?) -> Unit){
 
     var showCreateUser by remember { mutableStateOf(false) }
     var newUserName by remember { mutableStateOf("") }
@@ -52,9 +52,9 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
     //Por el momento metemos a cascoporrro 3
     val listadoUsuarios = remember {
         mutableStateListOf(
-            User(1, "Alya", "🎀",54),
-            User(2, "Dubhe", "⚽",33),
-            User(3, "Elio", "🌸",45)
+            User(1, "Alya", "🎀",54,0,0,0,0,0,0,0,0,"","","",null),
+            User(2, "Dubhe", "🎀",54,0,0,0,0,0,0,0,0,"","","",null)
+
         )
     }
 
@@ -181,19 +181,19 @@ fun LoginScreen ( onUserSelected: (Int) -> Unit){
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            if (newUserName.isNotBlank()) {
+                            /*if (newUserName.isNotBlank()) {
                                 val newUser = User(
                                     id = listadoUsuarios.maxOf { it.id } + 1,
-                                    name = newUserName,
+                                    nombre = newUserName,
                                     avatar = "👦" ,
-                                    tiempoConseguido = 34// Por defecto
+                                    tiempo = 34// Por defecto
                                 )
                                 listadoUsuarios.add(newUser)
                                 showCreateUser = false
                                 newUserName = ""
                                 onUserSelected(newUser.id)
                                 //TODO ingresar al usuario en la BBDD
-                            }
+                            }*/
                         }
                     ) {
                         Text("Crear")
@@ -230,7 +230,7 @@ fun UserCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = user.avatar,
+                text = user.avatar ?: "",
                 fontSize = 32.sp,
                 modifier = Modifier
                     .size(48.dp)
@@ -242,7 +242,7 @@ fun UserCard(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = user.name,
+                text = user.nombre,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium
             )
