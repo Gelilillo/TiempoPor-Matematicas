@@ -16,7 +16,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     null,
     DATABASE_VERSION
 ){
-
     companion object {
         private const val TAG = "DatabaseHelper"
 

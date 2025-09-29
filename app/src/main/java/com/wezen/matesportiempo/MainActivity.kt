@@ -16,12 +16,15 @@ import com.wezen.matesportiempo.ui.theme.MatesPorTiempoTheme
 
 class MainActivity : ComponentActivity() {
 
-    val dbHelper = DatabaseHelper.getInstance(this)
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val dbHelper = DatabaseHelper.getInstance(this)
+
+        // Esto inicializa la base si no existe aún
+        val db = dbHelper.writableDatabase
 
         setContent {
             MatesPorTiempoTheme {
