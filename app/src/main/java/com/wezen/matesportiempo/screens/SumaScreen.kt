@@ -107,8 +107,6 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
             )
         }
 
-
-
         Spacer(modifier = Modifier.height(32.dp))
 // --- ICONO DE LLEVADA ---
         if (conLlevada) {

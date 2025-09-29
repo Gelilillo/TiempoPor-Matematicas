@@ -82,5 +82,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Dependencias para GEMINI IA
-    //implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+
 }
