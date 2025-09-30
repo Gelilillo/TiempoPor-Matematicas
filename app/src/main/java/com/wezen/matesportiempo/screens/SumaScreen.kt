@@ -1,11 +1,9 @@
 package com.wezen.matesportiempo.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,15 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -55,9 +49,9 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
     var conLlevada = false
 
     // ESTADOS PARA LOS VALORES GENERADOS
-    var a by remember { mutableIntStateOf(0) }
-    var b by remember { mutableIntStateOf(0) }
-    var c by remember { mutableIntStateOf(0) }
+    var a by remember { mutableIntStateOf(0) } //Sumando1
+    var b by remember { mutableIntStateOf(0) } //Sumanddo2
+    var c by remember { mutableIntStateOf(0) } //Resultado
 
     // TRIGGER PARA REGENERAR
     var regenerarTrigger by remember { mutableIntStateOf(0) }
@@ -71,10 +65,10 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
 
     // GENERAR VALORES - Se ejecuta al cargar Y cuando cambia el trigger
     LaunchedEffect(regenerarTrigger) {
-        val (nuevoA, nuevoB, nuevoC) = generarNumeros(numCifras, conLlevada)
-        a = nuevoA
-        b = nuevoB
-        c = nuevoC
+        val (sumando1, sumando2, resultado) = generarNumeros(numCifras, conLlevada)
+        a = sumando1
+        b = sumando2
+        c = resultado
     }
     Column(
         modifier = Modifier
@@ -107,8 +101,6 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
             )
         }
 
-
-
         Spacer(modifier = Modifier.height(32.dp))
 // --- ICONO DE LLEVADA ---
         if (conLlevada) {
@@ -132,7 +124,6 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
             }
 
         }
@@ -140,7 +131,6 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
 
         val str1 = a.toString().padStart(numCifras, ' ')
         val str2 = b.toString().padStart(numCifras, ' ')
-
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -243,9 +233,19 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                                 .background(Color.Black)
                         )
 
-                        // CASILLA PARA RESULTADO
-                        var valor by remember { mutableStateOf("") }
+                    }
+                }
 
+            }
+            Row (
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.Top
+            ){
+                repeat(numCifras) { index ->
+
+                    // CASILLA PARA RESULTADO
+                    var valor by remember { mutableStateOf("") }
+                    Row {
                         OutlinedTextField(
                             value = valor,
                             onValueChange = { nuevo ->
@@ -275,9 +275,7 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+            //Spacer(modifier = Modifier.height(16.dp))
             // Texto instructivo
             Text(
                 text = "Solo un número por casilla",
