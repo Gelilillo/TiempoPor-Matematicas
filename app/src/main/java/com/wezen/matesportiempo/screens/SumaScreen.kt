@@ -1,5 +1,6 @@
 package com.wezen.matesportiempo.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,15 +30,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.util.Log
 import com.wezen.matesportiempo.ui.theme.Fondo1
 import com.wezen.matesportiempo.ui.theme.Fondo2
 import kotlin.random.Random
@@ -45,8 +49,18 @@ import kotlin.random.Random
 @Composable
 fun SumaScreen(userId: Int, onBack: () -> Unit) {
 
-    var numCifras = 5
+    var numCifras = 2
     var conLlevada = false
+    var sumaCorregida by remember { mutableStateOf(false) }
+    var erroresPorCifra by remember { mutableStateOf(listOf<Boolean>()) }
+
+    val contexto = LocalContext.current
+
+    //Para saber los valores de los cuadros de las respuestas
+    // Recordamos los valores de los 4 campos
+    val valores = remember {
+        mutableStateListOf(*Array(numCifras + 1) { "" })
+    }
 
     // ESTADOS PARA LOS VALORES GENERADOS
     var a by remember { mutableIntStateOf(0) } //Sumando1
@@ -69,6 +83,12 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
         a = sumando1
         b = sumando2
         c = resultado
+
+        sumaCorregida = false
+        erroresPorCifra = List(numCifras + 1) { false }
+        for (i in valores.indices) {
+            valores[i] = ""
+        }
     }
     Column(
         modifier = Modifier
@@ -128,7 +148,6 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
 
         }
         //DIBUJAMOS LA SUMA
-
         val str1 = a.toString().padStart(numCifras, ' ')
         val str2 = b.toString().padStart(numCifras, ' ')
 
@@ -170,19 +189,18 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                     // Línea separadora
                     Box(
                         modifier = Modifier
-                            .width(46.dp)
+                            .width(50.dp)
                             .height(2.dp)
                             .background(Color.Black)
                     )
 
-                    // Espacio vacío para alineación
+                    // Espacio entre la linea y los
                     Box(
                         modifier = Modifier
                             .width(50.dp)
-                            .height(60.dp)
+                            .height(2.dp)
                     )
                 }
-
                 // COLUMNAS DE NÚMEROS
                 repeat(numCifras) { index ->
                     Column(
@@ -206,7 +224,6 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                                 )
                             }
                         }
-
                         // SEGUNDA CIFRA
                         Box(
                             modifier = Modifier
@@ -224,15 +241,13 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                                 )
                             }
                         }
-
                         // LÍNEA SEPARADORA
                         Box(
                             modifier = Modifier
-                                .width(46.dp)
+                                .width(50.dp)
                                 .height(2.dp)
                                 .background(Color.Black)
                         )
-
                     }
                 }
 
@@ -241,16 +256,16 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.Top
             ){
-                repeat(numCifras) { index ->
+                repeat(numCifras+1) { index ->
 
                     // CASILLA PARA RESULTADO
-                    var valor by remember { mutableStateOf("") }
                     Row {
                         OutlinedTextField(
-                            value = valor,
+                            value = valores[index],
+
                             onValueChange = { nuevo ->
                                 if (nuevo.length <= 1 && nuevo.all { it.isDigit() }) {
-                                    valor = nuevo
+                                    valores[index] = nuevo
                                 }
                             },
                             singleLine = true,
@@ -264,8 +279,10 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                                 keyboardType = KeyboardType.Number
                             ),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE53935),
-                                unfocusedBorderColor = Color(0xFFE53935),
+                                focusedBorderColor = if (erroresPorCifra.getOrNull(index) == true)
+                                    Color(0xFFFF0000) else Color(0xFF6C4A4A),
+                                unfocusedBorderColor = if (erroresPorCifra.getOrNull(index) == true)
+                                    Color(0xFFFF0000) else Color(0xFF6C4A4A),
                                 cursorColor = Color(0xFF2196F3)
                             ),
                             modifier = Modifier
@@ -275,7 +292,7 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
                     }
                 }
             }
-            //Spacer(modifier = Modifier.height(16.dp))
+
             // Texto instructivo
             Text(
                 text = "Solo un número por casilla",
@@ -287,12 +304,65 @@ fun SumaScreen(userId: Int, onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = {//TODO corregir y sumar estadisticas de la suma.
-                 },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)) {
+            if (!sumaCorregida) {
+                Button(
+                    onClick = {
+                        val (todosCorrectos, errores) = corregirSuma(valores, c)
+                        erroresPorCifra = errores
 
-                Text("Corregir", color = Color.Cyan,modifier = Modifier.padding(vertical = 8.dp))
+                        if (todosCorrectos) {
+                            sumaCorregida = true
+                            Toast.makeText(contexto, "¡Muy bien! Suma correcta ✓", Toast.LENGTH_SHORT).show()
+
+                        } else {
+                            val numErrores = errores.count { it }
+                            Toast.makeText(
+                                contexto,
+                                "Hay $numErrores error${if (numErrores > 1) "es" else ""} marcado${if (numErrores > 1) "s" else ""} en rojo",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                ) {
+                    Text("Corregir", color = Color.White, modifier = Modifier.padding(vertical = 8.dp))
+                }
+            } else {
+                // Botones cuando la suma está correcta
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = onBack,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF757575))
+                    ) {
+                        Text("Atrás", color = Color.White, modifier = Modifier.padding(vertical = 8.dp))
+                    }
+
+                    Button(
+                        onClick = {
+                            regenerarValores()
+                            sumaCorregida = false
+
+                                  },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    ) {
+                        Text("Otra Suma!", color = Color.White, modifier = Modifier.padding(vertical = 8.dp))
+                    }
+                }
             }
         }
 
@@ -304,12 +374,11 @@ fun generarNumeros(numCifras: Int, permitirLlevada: Boolean): Triple<Int, Int, I
 
     val digitos1 = mutableListOf<Int>()
     val digitos2 = mutableListOf<Int>()
-    val digitos3 = mutableListOf<Int>()
+    var resultado: Int
 
     repeat(numCifras) {
         var d1: Int
         var d2: Int
-        var d3: Int
 
         if (permitirLlevada) {
             // cualquier dígito 0–9
@@ -320,16 +389,47 @@ fun generarNumeros(numCifras: Int, permitirLlevada: Boolean): Triple<Int, Int, I
             d1 = Random.nextInt(0, 10)
             d2 = Random.nextInt(0, 10 - d1) // aseguramos que d1+d2 < 10
         }
-        d3= d1+d2
+        //Para asegurar que el numero de arriba sea siempre mas grande que el de abajo.
+        d1=maxOf(d2,d1)
+        d2=minOf(d2,d1)
+
+
         digitos1.add(d1)
         digitos2.add(d2)
-        digitos3.add(d3)
+
     }
+
+
 
     // Convertimos listas de dígitos en números
     val num1 = digitos1.joinToString("").toInt()
     val num2 = digitos2.joinToString("").toInt()
-    val num3 = digitos3.joinToString("").toInt()
 
-    return Triple(num1 , num2, num3)
+    resultado = num1 + num2
+
+    Log.d("Suma", "Los numero son $num1 y $num2 el resultado es: $resultado")
+
+    return Triple(num1 , num2, resultado)
+}
+
+fun corregirSuma(valores: List<String>, resultadoCorrecto: Int): Pair<Boolean, List<Boolean>> {
+    // Convertir el resultado correcto a string con padding
+    val resultadoStr = resultadoCorrecto.toString().padStart(valores.size, '0')
+
+    // Lista para marcar qué casillas tienen error
+    val errores = MutableList(valores.size) { false }
+    var todosCorrectos = true
+
+    // Comparar cada cifra
+    valores.forEachIndexed { index, valorUsuario ->
+        val digitoCorrecto = resultadoStr.getOrNull(index)?.toString() ?: "0"
+
+        // Si el usuario no ha introducido nada o es incorrecto
+        if (valorUsuario.isEmpty() || valorUsuario != digitoCorrecto) {
+            errores[index] = true
+            todosCorrectos = false
+        }
+    }
+
+    return Pair(todosCorrectos, errores)
 }

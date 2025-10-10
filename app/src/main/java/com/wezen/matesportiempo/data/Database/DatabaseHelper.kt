@@ -103,6 +103,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             }
         }
 
+        Log.d(TAG, "Lista Usuarios: $usuarios")
         return usuarios
     }
 

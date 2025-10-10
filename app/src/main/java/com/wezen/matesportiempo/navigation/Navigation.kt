@@ -1,14 +1,13 @@
 package com.wezen.matesportiempo.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.wezen.matesportiempo.data.Database.DatabaseHelper
 import com.wezen.matesportiempo.screens.*
 
 
 @Composable
-fun MatesPorTiempoNavigation() {
+fun MatesPorTiempoNavigation(dbHelper: DatabaseHelper) {
     val navController = rememberNavController()
 
     NavHost(
@@ -19,7 +18,8 @@ fun MatesPorTiempoNavigation() {
             LoginScreen(
                 onUserSelected = { userId ->
                     navController.navigate("main_menu/$userId")
-                }
+                },
+                dbHelper
             )
         }
         composable("main_menu/{userId}") { backStackEntry ->

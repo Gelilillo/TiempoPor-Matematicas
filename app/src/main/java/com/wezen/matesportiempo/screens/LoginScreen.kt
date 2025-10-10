@@ -39,14 +39,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wezen.matesportiempo.data.Database.DatabaseHelper
 import com.wezen.matesportiempo.data.User
 import com.wezen.matesportiempo.ui.theme.*
 
 @Composable
-fun LoginScreen ( onUserSelected: (Long?) -> Unit){
+fun LoginScreen (onUserSelected: (Long?) -> Unit, dbHelper: DatabaseHelper){
 
     var showCreateUser by remember { mutableStateOf(false) }
     var newUserName by remember { mutableStateOf("") }
+
+    var selectedAvatar by remember { mutableStateOf("😀") }
+
+    // Lista de avatares disponibles
+    val avatares = listOf(
+        "😀", "😎", "🤓", "😺", "🦊", "🐻", "🐼", "🦁","🎀",
+        "🐯", "🐨", "🐸", "🦄", "🐲", "🚀", "⚽", "🎮"
+    )
 
     //cargamos los usuarios existentes de la base de datos TODO leer de la BBDD i cargar los usuarios existentes en el listado
     //Por el momento metemos a cascoporrro 3
@@ -181,19 +190,16 @@ fun LoginScreen ( onUserSelected: (Long?) -> Unit){
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            /*if (newUserName.isNotBlank()) {
+                            if (newUserName.isNotBlank()) {
                                 val newUser = User(
-                                    id = listadoUsuarios.maxOf { it.id } + 1,
                                     nombre = newUserName,
-                                    avatar = "👦" ,
-                                    tiempo = 34// Por defecto
                                 )
-                                listadoUsuarios.add(newUser)
+                                dbHelper.createUser(newUserName)
                                 showCreateUser = false
                                 newUserName = ""
                                 onUserSelected(newUser.id)
                                 //TODO ingresar al usuario en la BBDD
-                            }*/
+                            }
                         }
                     ) {
                         Text("Crear")
